@@ -44,7 +44,6 @@
 
     .page { position: relative; z-index: 1; }
 
-    /* ── REGISTRATION PAGE ── */
     #reg-page {
       min-height: 100vh;
       display: flex;
@@ -69,10 +68,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .reg-header {
-      text-align: center;
-      margin-bottom: 36px;
-    }
+    .reg-header { text-align: center; margin-bottom: 36px; }
 
     .reg-badge {
       display: inline-block;
@@ -97,16 +93,9 @@
     }
 
     .reg-title span { color: var(--accent); }
+    .reg-sub { font-size: 13px; color: var(--muted); letter-spacing: 0.5px; }
 
-    .reg-sub {
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-    }
-
-    .field {
-      margin-bottom: 20px;
-    }
+    .field { margin-bottom: 20px; }
 
     .field label {
       display: block;
@@ -181,7 +170,6 @@
     .btn-start:active { transform: translateY(0); }
     .btn-start:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ── ANSWER SHEET PAGE ── */
     #sheet-page {
       display: none;
       min-height: 100vh;
@@ -198,29 +186,11 @@
       flex-wrap: wrap;
     }
 
-    .student-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+    .student-info { display: flex; flex-direction: column; gap: 2px; }
+    .student-name { font-size: 18px; font-weight: 700; }
+    .student-meta { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
 
-    .student-name {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .student-meta {
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .timer-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
+    .timer-block { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 
     .timer-label {
       font-size: 10px;
@@ -263,7 +233,6 @@
       font-style: italic;
     }
 
-    /* answer grid */
     .grid-container {
       max-width: 900px;
       margin: 0 auto;
@@ -288,11 +257,7 @@
       align-items: center;
     }
 
-    .answered-count {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--accent);
-      font-size: 13px;
-    }
+    .answered-count { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 13px; }
 
     .grid-header {
       display: grid;
@@ -326,20 +291,9 @@
     .question-row:hover { background: rgba(0,212,255,0.03); }
     .question-row.answered { background: rgba(0,214,118,0.04); }
 
-    .q-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-    }
+    .q-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--muted); }
 
-    .option-cell {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* custom radio */
+    .option-cell { display: flex; justify-content: center; align-items: center; }
     .option-cell input[type="radio"] { display: none; }
 
     .option-cell label {
@@ -371,7 +325,6 @@
       box-shadow: 0 2px 12px rgba(0,212,255,0.35);
     }
 
-    /* submit */
     .submit-area {
       max-width: 900px;
       margin: 24px auto 0;
@@ -382,11 +335,7 @@
       flex-wrap: wrap;
     }
 
-    .submit-note {
-      font-size: 12px;
-      color: var(--muted);
-      flex: 1;
-    }
+    .submit-note { font-size: 12px; color: var(--muted); flex: 1; }
 
     .btn-submit {
       padding: 14px 40px;
@@ -405,7 +354,6 @@
     .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,230,118,0.4); }
     .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    /* ── THANK YOU PAGE ── */
     #thanks-page {
       display: none;
       min-height: 100vh;
@@ -439,21 +387,10 @@
       font-size: 32px;
     }
 
-    .thanks-title {
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
+    .thanks-title { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
     .thanks-sub { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
-    .footer {
-      text-align: center;
-      margin-top: 32px;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 1px;
-    }
+    .footer { text-align: center; margin-top: 32px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
 
     @media (max-width: 600px) {
       .reg-card { padding: 32px 24px; }
@@ -476,7 +413,7 @@
 
     <div class="info-box">
       <strong>⚠ Instructions</strong>
-      20 questions · Timer starts on your first answer · 6 min total · Tab switch = −1.5 pts penalty
+      20 questions · Timer starts on your first answer · 10 min total · Tab switch = −1.5 pts penalty
     </div>
 
     <div class="field">
@@ -515,7 +452,7 @@
     <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
       <div class="timer-block">
         <div class="timer-label">Time Remaining</div>
-        <div id="timer-display">6:00</div>
+        <div id="timer-display">10:00</div>
       </div>
       <div class="timer-not-started" id="timer-hint">Starts on first answer</div>
       <div class="tab-warning" id="tab-warn">⚠ Tab switch detected</div>
@@ -534,9 +471,7 @@
       <span>C</span>
       <span>D</span>
     </div>
-    <div id="answer-grid">
-      <!-- rows injected by JS -->
-    </div>
+    <div id="answer-grid"></div>
   </div>
 
   <div class="submit-area">
@@ -561,7 +496,7 @@
 
 <script>
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQ49ebOvpIuttMBXh7gkCRU857mK6T0Hr3v4yiEisPzHjwHdaPFyD744kWGVu81KymqA/exec";
-  const TOTAL_TIME = 10 * 60; // 6 minutes in seconds
+  const TOTAL_TIME = 10 * 60; // 10 minutes
   const TAB_PENALTY = 1.5;
   const TOTAL_Q = 20;
 
@@ -573,7 +508,6 @@
   let tabSwitches = 0;
   let submitted = false;
 
-  // ── Build answer grid ──
   function buildGrid() {
     const container = document.getElementById('answer-grid');
     container.innerHTML = '';
@@ -623,7 +557,6 @@
     else if (timeLeft <= 60) el.classList.add('warning');
   }
 
-  // ── Tab switch detection ──
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && !submitted) {
       tabSwitches++;
@@ -634,7 +567,6 @@
     }
   });
 
-  // ── Registration ──
   async function beginQuiz() {
     const nameEl = document.getElementById('reg-name');
     const idxEl  = document.getElementById('reg-index');
@@ -681,7 +613,6 @@
     document.addEventListener('cut',   e => e.preventDefault());
   }
 
-  // ── Submit ──
   async function submitQuiz() {
     if (submitted) return;
     submitted = true;
@@ -693,7 +624,6 @@
     const timeUsed = TOTAL_TIME - timeLeft;
     const tabDeduction = tabSwitches * TAB_PENALTY;
     const totalAnswered = Object.keys(answers).length;
-
     const answerStr = Array.from({length: TOTAL_Q}, (_, i) => `Q${i+1}=${answers[i+1] || '-'}`).join(',');
 
     const payload = {
