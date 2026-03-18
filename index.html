@@ -1,628 +1,738 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>METE 451 Quiz</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-      const { useState, useEffect } = React;
-      
-      const AlertCircle = ({ className }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-      );
-      
-      const Lock = ({ className }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
-      );
-      
-      const CheckCircle = ({ className }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-      );
-      
-      const Timer = ({ className }) => (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-      );
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>METE 451 — Answer Sheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2235;
+      --border: #1e2d45;
+      --accent: #00d4ff;
+      --accent2: #ff6b35;
+      --success: #00e676;
+      --warning: #ffab00;
+      --danger: #ff4444;
+      --text: #e8edf5;
+      --muted: #5a7090;
+      --card-shadow: 0 4px 24px rgba(0,212,255,0.08);
+    }
 
-      const QuizApp = () => {
-        const [view, setView] = useState("start");
-        const [studentName, setStudentName] = useState("");
-        const [indexNumber, setIndexNumber] = useState("");
-        const [currentQuestion, setCurrentQuestion] = useState(0);
-        const [answers, setAnswers] = useState({});
-        const [questionTimeLeft, setQuestionTimeLeft] = useState(20);
-        const [tabSwitches, setTabSwitches] = useState(0);
-        const [quizSubmitted, setQuizSubmitted] = useState(false);
-        const [adminPassword, setAdminPassword] = useState("");
-        const [showAdminLogin, setShowAdminLogin] = useState(false);
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        const questions = [
-          {
-            id: 1,
-            type: "mcq",
-            question: "Hydrocyclone classification fundamentally differs from gravitational classification because the controlling field is predominantly:",
-            options: [
-              "radial inertial dominance",
-              "tangential centrifugal dominance",
-              "axial centrifugal dominance",
-              "radial gravitational dominance",
-            ],
-            correctAnswer: "tangential centrifugal dominance",
-          },
-          {
-            id: 2,
-            type: "mcq",
-            question: "The tangential or involuted feed entry in a hydrocyclone is primarily intended to:",
-            options: [
-              "stabilize overflow pressure",
-              "initiate rotational slurry motion",
-              "reduce feed turbulence",
-              "equalize particle velocities",
-            ],
-            correctAnswer: "initiate rotational slurry motion",
-          },
-          {
-            id: 3,
-            type: "mcq",
-            question: "Variation in the cross-sectional shape of the inlet pipe mainly influences classification through changes in:",
-            options: [
-              "particle density distribution",
-              "internal velocity profile",
-              "slurry viscosity gradient",
-              "centrifugal acceleration magnitude",
-            ],
-            correctAnswer: "internal velocity profile",
-          },
-          {
-            id: 4,
-            type: "mcq",
-            question: "The vortex finder extending below the feed chamber primarily ensures that:",
-            options: [
-              "underflow turbulence is minimized",
-              "overflow withdrawal occurs from the inner vortex",
-              "feed pressure losses are reduced",
-              "coarse particles bypass separation",
-            ],
-            correctAnswer: "overflow withdrawal occurs from the inner vortex",
-          },
-          {
-            id: 5,
-            type: "mcq",
-            question: "The inverted conical section of a hydrocyclone contributes to separation mainly by:",
-            options: [
-              "inducing axial pressure recovery",
-              "concentrating coarse particles toward the apex",
-              "reducing swirl intensity",
-              "increasing overflow stability",
-            ],
-            correctAnswer: "concentrating coarse particles toward the apex",
-          },
-          {
-            id: 6,
-            type: "mcq",
-            question: "Protective linings such as rubber, neoprene, or urethane are used in hydrocyclones primarily to:",
-            options: [
-              "increase hydraulic efficiency",
-              "reduce erosion from abrasive slurry",
-              "improve particle classification",
-              "regulate internal pressure gradients",
-            ],
-            correctAnswer: "reduce erosion from abrasive slurry",
-          },
-          {
-            id: 7,
-            type: "mcq",
-            question: "A hydraulically or pneumatically adjustable apex sleeve allows operational control primarily by altering:",
-            options: [
-              "feed turbulence intensity",
-              "underflow discharge restriction",
-              "vortex finder immersion depth",
-              "slurry density in the feed",
-            ],
-            correctAnswer: "underflow discharge restriction",
-          },
-          {
-            id: 8,
-            type: "mcq",
-            question: "In mineral processing, wet classification is generally preferred for fine particles because the fluid medium primarily enables separation based on:",
-            options: [
-              "particle charge differences",
-              "particle settling velocities",
-              "particle magnetic susceptibility",
-              "particle compressibility",
-            ],
-            correctAnswer: "particle settling velocities",
-          },
-          {
-            id: 9,
-            type: "mcq",
-            question: "Cyclones are commonly used in primary, secondary, and regrind circuits mainly because they:",
-            options: [
-              "maintain constant particle density",
-              "rapidly classify fine grinding products",
-              "reduce grinding energy directly",
-              "control chemical composition",
-            ],
-            correctAnswer: "rapidly classify fine grinding products",
-          },
-          {
-            id: 10,
-            type: "mcq",
-            question: "The cylindrical section of a hydrocyclone improves separation primarily because it:",
-            options: [
-              "stabilizes feed pressure fluctuations",
-              "increases slurry retention time",
-              "decreases centrifugal acceleration",
-              "reduces vortex instability",
-            ],
-            correctAnswer: "increases slurry retention time",
-          },
-          {
-            id: 11,
-            type: "mcq",
-            question: "The conical section angle influences cyclone performance mainly by affecting:",
-            options: [
-              "retention time and particle migration",
-              "feed velocity distribution",
-              "slurry viscosity gradient",
-              "overflow turbulence",
-            ],
-            correctAnswer: "retention time and particle migration",
-          },
-          {
-            id: 12,
-            type: "mcq",
-            question: "The D50C classification parameter represents a condition where:",
-            options: [
-              "separation efficiency is maximum",
-              "coarse particles dominate underflow",
-              "equal probability exists for reporting to either product",
-              "overflow particle size becomes constant",
-            ],
-            correctAnswer: "equal probability exists for reporting to either product",
-          },
-          {
-            id: 13,
-            type: "mcq",
-            question: "The use of reduced recovery curves in cyclone analysis allows comparison of performance because it:",
-            options: [
-              "removes dependence on feed density",
-              "normalizes particle size relative to cut size",
-              "eliminates slurry viscosity effects",
-              "corrects centrifugal acceleration",
-            ],
-            correctAnswer: "normalizes particle size relative to cut size",
-          },
-          {
-            id: 14,
-            type: "mcq",
-            question: "Thickening in mineral processing is mainly applied upstream of downstream processes to:",
-            options: [
-              "improve mineral liberation",
-              "adjust pulp density for subsequent operations",
-              "increase particle hardness",
-              "reduce slurry viscosity",
-            ],
-            correctAnswer: "adjust pulp density for subsequent operations",
-          },
-          {
-            id: 15,
-            type: "mcq",
-            question: "Sedimentation tests used in thickener design fundamentally establish how:",
-            options: [
-              "particle density affects grinding efficiency",
-              "settling velocity relates to vessel dimensions",
-              "slurry viscosity changes with pressure",
-              "particle shape controls cyclone separation",
-            ],
-            correctAnswer: "settling velocity relates to vessel dimensions",
-          },
-        ];
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-        const ADMIN_PASSWORD = "admin123";
-        const TIME_PER_QUESTION = 20;
-        const TAB_SWITCH_PENALTY = 0.5;
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,212,255,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255,107,53,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        useEffect(() => {
-          if (view === "quiz") {
-            const handleContextMenu = (e) => e.preventDefault();
-            document.addEventListener("contextmenu", handleContextMenu);
-            document.body.style.userSelect = "none";
-            document.body.style.webkitUserSelect = "none";
-            const handleVisibilityChange = () => {
-              if (document.hidden) setTabSwitches((prev) => prev + 1);
-            };
-            document.addEventListener("visibilitychange", handleVisibilityChange);
-            const handleCopy = (e) => e.preventDefault();
-            document.addEventListener("copy", handleCopy);
-            document.addEventListener("cut", handleCopy);
-            document.addEventListener("paste", handleCopy);
-            return () => {
-              document.removeEventListener("contextmenu", handleContextMenu);
-              document.removeEventListener("visibilitychange", handleVisibilityChange);
-              document.removeEventListener("copy", handleCopy);
-              document.removeEventListener("cut", handleCopy);
-              document.removeEventListener("paste", handleCopy);
-              document.body.style.userSelect = "auto";
-              document.body.style.webkitUserSelect = "auto";
-            };
-          }
-        }, [view]);
+    .page { position: relative; z-index: 1; }
 
-        useEffect(() => {
-          if (view === "quiz" && questionTimeLeft > 0) {
-            const timer = setTimeout(() => setQuestionTimeLeft((prev) => prev - 1), 1000);
-            return () => clearTimeout(timer);
-          } else if (view === "quiz" && questionTimeLeft === 0) {
-            handleAutoNext();
-          }
-        }, [view, questionTimeLeft]);
+    /* ── REGISTRATION PAGE ── */
+    #reg-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
 
-        const handleAutoNext = () => {
-          if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion((prev) => prev + 1);
-            setQuestionTimeLeft(TIME_PER_QUESTION);
-          } else {
-            handleSubmitQuiz();
-          }
-        };
+    .reg-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      box-shadow: var(--card-shadow);
+      animation: fadeUp 0.6s ease both;
+    }
 
-        const handleStartQuiz = async () => {
-          if (!studentName.trim() || !indexNumber.trim()) {
-            alert("Please enter your name and index number");
-            return;
-          }
-          const startButton = document.querySelector("button");
-          if (startButton) startButton.disabled = true;
-          try {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQ49ebOvpIuttMBXh7gkCRU857mK6T0Hr3v4yiEisPzHjwHdaPFyD744kWGVu81KymqA/exec";
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=Sheet1`);
-            const data = await response.json();
-            const alreadyTaken = data.some((record) => String(record.indexNumber).trim() === String(indexNumber).trim());
-            if (alreadyTaken) {
-              alert("This index number has already been used to take the quiz. You cannot take the quiz again.");
-              if (startButton) startButton.disabled = false;
-              return;
-            }
-            setView("quiz");
-            setQuestionTimeLeft(TIME_PER_QUESTION);
-          } catch (error) {
-            console.error("Error checking index number:", error);
-            alert("Error checking records. Please try again or contact your instructor.");
-            if (startButton) startButton.disabled = false;
-          }
-        };
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-        const handleAnswerChange = (questionId, answer) => {
-          setAnswers((prev) => ({ ...prev, [questionId]: answer }));
-        };
+    .reg-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
 
-        const calculateScore = () => {
-          let correct = 0;
-          questions.forEach((q) => {
-            if (answers[q.id] === q.correctAnswer) correct++;
-          });
-          const tabPenalty = tabSwitches * TAB_SWITCH_PENALTY;
-          const finalScore = Math.max(0, correct - tabPenalty);
-          return { rawScore: correct, tabPenalty, finalScore };
-        };
+    .reg-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.05));
+      border: 1px solid rgba(0,212,255,0.3);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
 
-        const handleSubmitQuiz = async () => {
-          if (quizSubmitted) return;
-          const { rawScore, tabPenalty, finalScore } = calculateScore();
-          const totalQuestions = questions.length;
-          const percentage = ((finalScore / totalQuestions) * 100).toFixed(1);
-          const result = {
-            studentName, indexNumber,
-            department: "metallurgical",
-            sheet: "Sheet1",
-            rawScore, tabSwitches, tabPenalty, finalScore, totalQuestions, percentage,
-            timestamp: new Date().toLocaleString(),
-          };
-          setQuizSubmitted(true);
-          try {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQ49ebOvpIuttMBXh7gkCRU857mK6T0Hr3v4yiEisPzHjwHdaPFyD744kWGVu81KymqA/exec";
-            await fetch(GOOGLE_SCRIPT_URL, {
-              method: "POST", mode: "no-cors",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(result),
-            });
-          } catch (error) {
-            console.error("Error submitting results:", error);
-          }
-          setView("thankyou");
-        };
+    .reg-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
 
-        const handleAdminLogin = () => {
-          if (adminPassword === ADMIN_PASSWORD) setView("admin");
-          else alert("Incorrect password");
-        };
+    .reg-title span { color: var(--accent); }
 
-        const AdminView = () => {
-          const [results, setResults] = useState([]);
-          const [loading, setLoading] = useState(true);
+    .reg-sub {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
 
-          useEffect(() => { loadResultsFromSheets(); }, []);
+    .field {
+      margin-bottom: 20px;
+    }
 
-          const loadResultsFromSheets = async () => {
-            setLoading(true);
-            try {
-              const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQ49ebOvpIuttMBXh7gkCRU857mK6T0Hr3v4yiEisPzHjwHdaPFyD744kWGVu81KymqA/exec";
-              const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=Sheet1`);
-              const data = await response.json();
-              setResults(data.filter(record => !record.sheet || record.sheet === 'Sheet1'));
-              setLoading(false);
-            } catch (error) {
-              console.error("Error loading results:", error);
-              setLoading(false);
-            }
-          };
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
 
-          const calculateStats = () => {
-            if (results.length === 0) return { highest: 0, average: 0, lowest: 0 };
-            const scores = results.map((r) => {
-              const n = typeof r.finalScore === 'string' ? parseFloat(r.finalScore.toString().split("/")[0]) : parseFloat(r.finalScore);
-              return isNaN(n) ? 0 : n;
-            });
-            return {
-              highest: Math.max(...scores),
-              lowest: Math.min(...scores),
-              average: (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1),
-            };
-          };
+    .field input, .field select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+    }
 
-          const stats = calculateStats();
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7090' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+    }
 
-          return (
-            <div className="min-h-screen bg-gray-50 p-6">
-              <div className="max-w-7xl mx-auto">
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold">Admin Dashboard - METE 451 Quiz</h2>
-                    <div className="flex gap-2">
-                      <button onClick={() => loadResultsFromSheets()} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Refresh</button>
-                      <button onClick={() => setView("start")} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Exit Admin</button>
-                    </div>
-                  </div>
-                  {loading ? (
-                    <p>Loading results from Google Sheets...</p>
-                  ) : results.length === 0 ? (
-                    <p className="text-gray-500">No quiz submissions yet for Metallurgical Engineering.</p>
-                  ) : (
-                    <>
-                      <div className="mb-4">
-                        <p className="text-lg font-semibold text-gray-700">Metallurgical Engineering - Hydrocyclone & Classification Quiz</p>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div className="bg-blue-50 rounded-lg p-4">
-                          <p className="text-sm text-blue-600 font-semibold mb-1">Total Submissions</p>
-                          <p className="text-3xl font-bold text-blue-700">{results.length}</p>
-                        </div>
-                        <div className="bg-green-50 rounded-lg p-4">
-                          <p className="text-sm text-green-600 font-semibold mb-1">Highest Score</p>
-                          <p className="text-3xl font-bold text-green-700">{stats.highest}/15</p>
-                        </div>
-                        <div className="bg-yellow-50 rounded-lg p-4">
-                          <p className="text-sm text-yellow-600 font-semibold mb-1">Average Score</p>
-                          <p className="text-3xl font-bold text-yellow-700">{stats.average}/15</p>
-                        </div>
-                        <div className="bg-red-50 rounded-lg p-4">
-                          <p className="text-sm text-red-600 font-semibold mb-1">Lowest Score</p>
-                          <p className="text-3xl font-bold text-red-700">{stats.lowest}/15</p>
-                        </div>
-                      </div>
-                      <div className="mb-4">
-                        <p className="text-xs text-gray-500">Data synced with Google Sheets (Sheet1) | Each tab switch = -0.5 points penalty</p>
-                      </div>
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              {["#","Name","Index Number","Raw Score","Tab Switches","Penalty","Final Score","Percentage","Timestamp"].map(h => (
-                                <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{h}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {results.map((result, idx) => (
-                              <tr key={idx}>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold text-gray-600">{idx + 1}</td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm">{result.studentName}</td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm">{result.indexNumber}</td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold">{result.rawScore}</td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm">{result.tabSwitches}</td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-red-600">{result.tabPenalty}</td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm"><span className="font-bold text-indigo-600">{result.finalScore}</span></td>
-                                <td className="px-4 py-4 whitespace-nowrap"><span className="px-2 py-1 rounded text-sm font-semibold bg-gray-100 text-gray-800">{result.percentage}%</span></td>
-                                <td className="px-4 py-4 whitespace-nowrap text-xs text-gray-500">{result.timestamp}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="text-center mt-6"><p className="text-sm text-gray-500">©Team Benny</p></div>
-              </div>
-            </div>
-          );
-        };
+    .field select option { background: #1a2235; }
 
-        if (view === "admin") return <AdminView />;
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.12);
+    }
 
-        if (view === "start") {
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-              <div className="max-w-md w-full">
-                <div className="bg-white rounded-lg shadow-xl p-8">
-                  <div className="text-center mb-6">
-                    <Lock className="mx-auto h-12 w-12 text-indigo-600 mb-3" />
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">METE 451 Quiz</h1>
-                    <p className="text-gray-600">Metallurgical Engineering</p>
-                    <p className="text-sm text-gray-500 mt-1">Hydrocyclone & Classification</p>
-                  </div>
-                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                    <div className="flex">
-                      <AlertCircle className="h-5 w-5 text-yellow-400 mr-2 flex-shrink-0" />
-                      <div className="text-sm text-yellow-700">
-                        <p className="font-semibold mb-1">Quiz Rules:</p>
-                        <ul className="list-disc list-inside space-y-1">
-                          <li>15 questions total</li>
-                          <li>20 seconds per question</li>
-                          <li>Auto-advances when time expires</li>
-                          <li>Tab switching: -0.5 points each</li>
-                          <li>Text selection disabled</li>
-                          <li>Right-click disabled</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                      <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder="Enter your full name" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Index Number</label>
-                      <input type="text" value={indexNumber} onChange={(e) => setIndexNumber(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder="Enter your index number" />
-                    </div>
-                    <button onClick={handleStartQuiz} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200">
-                      Start Quiz
-                    </button>
-                    <button onClick={() => setShowAdminLogin(!showAdminLogin)} className="w-full text-sm text-gray-500 hover:text-gray-700 mt-4">
-                      {showAdminLogin ? "Hide Admin Login" : "Admin Login"}
-                    </button>
-                    {showAdminLogin && (
-                      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                        <input type="password" value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)}
-                          placeholder="Admin Password" className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2" />
-                        <button onClick={handleAdminLogin} className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700">Login as Admin</button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="text-center mt-6"><p className="text-sm text-gray-400">©Team Benny</p></div>
-              </div>
-            </div>
-          );
-        }
+    .field input::placeholder { color: var(--muted); }
 
-        if (view === "thankyou") {
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-              <div className="max-w-md w-full">
-                <div className="bg-white rounded-lg shadow-xl p-8">
-                  <div className="text-center">
-                    <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Quiz Submitted Successfully!</h2>
-                    <p className="text-gray-600 mb-6">Thank you, {studentName}</p>
-                    <div className="bg-blue-50 rounded-lg p-6 mb-6">
-                      <p className="text-gray-700 text-lg">Your responses have been recorded and submitted to your instructor.</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Results will be shared by your instructor.</p>
-                  </div>
-                </div>
-                <div className="text-center mt-6"><p className="text-sm text-gray-400">©Team Benny</p></div>
-              </div>
-            </div>
-          );
-        }
+    .info-box {
+      background: rgba(255,171,0,0.07);
+      border: 1px solid rgba(255,171,0,0.25);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: #ffcc55;
+      line-height: 1.6;
+    }
 
-        const question = questions[currentQuestion];
-        const progress = ((currentQuestion + 1) / questions.length) * 100;
+    .info-box strong { display: block; margin-bottom: 4px; color: var(--warning); }
 
-        const handleNext = () => {
-          if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion((prev) => prev + 1);
-            setQuestionTimeLeft(TIME_PER_QUESTION);
-          } else {
-            handleSubmitQuiz();
-          }
-        };
+    .btn-start {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+    }
 
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="flex items-center space-x-4">
-                    <span className="text-sm font-semibold text-gray-700">{studentName} ({indexNumber})</span>
-                    <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-800 rounded">Metallurgical Engineering</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    {tabSwitches > 0 && (
-                      <span className="text-sm text-red-600 font-semibold">⚠️ Switches: {tabSwitches} (-{(tabSwitches * TAB_SWITCH_PENALTY).toFixed(1)})</span>
-                    )}
-                    <div className="flex items-center space-x-2">
-                      <Timer className={`h-5 w-5 ${questionTimeLeft <= 5 ? "text-red-600" : "text-indigo-600"}`} />
-                      <span className={`font-mono font-bold text-xl ${questionTimeLeft <= 5 ? "text-red-600 animate-pulse" : "text-gray-700"}`}>
-                        {questionTimeLeft}s
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Question {currentQuestion + 1} of {questions.length}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-indigo-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
-                </div>
-              </div>
+    .btn-start:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,212,255,0.4); }
+    .btn-start:active { transform: translateY(0); }
+    .btn-start:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className="text-lg font-bold text-gray-800 mb-6 leading-relaxed">{question.question}</h2>
-                <div className="space-y-3">
-                  {question.options.map((option, idx) => (
-                    <label key={idx} className="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition duration-200">
-                      <input type="radio" name={`question-${question.id}`} value={option}
-                        checked={answers[question.id] === option}
-                        onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                        className="mt-1 mr-3 h-4 w-4 text-indigo-600 flex-shrink-0" />
-                      <span className="text-gray-700">{option}</span>
-                    </label>
-                  ))}
-                </div>
-                <div className="flex justify-end mt-8">
-                  <button onClick={handleNext}
-                    className={`px-8 py-3 rounded-lg font-semibold ${currentQuestion === questions.length - 1 ? "bg-green-600 hover:bg-green-700" : "bg-indigo-600 hover:bg-indigo-700"} text-white`}>
-                    {currentQuestion === questions.length - 1 ? "Submit Quiz" : "Next Question"}
-                  </button>
-                </div>
-              </div>
+    /* ── ANSWER SHEET PAGE ── */
+    #sheet-page {
+      display: none;
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+    }
 
-              <div className="text-center mt-6"><p className="text-sm text-gray-400">©Team Benny</p></div>
-            </div>
-          </div>
-        );
-      };
+    .sheet-header {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
 
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<QuizApp />);
-    </script>
-  </body>
+    .student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .student-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .student-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .timer-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .timer-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #timer-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 42px;
+      font-weight: 600;
+      color: var(--accent);
+      transition: color 0.3s;
+      line-height: 1;
+    }
+
+    #timer-display.warning { color: var(--warning); }
+    #timer-display.danger  { color: var(--danger); animation: pulse 0.6s infinite alternate; }
+
+    @keyframes pulse { from { opacity: 1; } to { opacity: 0.5; } }
+
+    .tab-warning {
+      font-size: 11px;
+      color: var(--danger);
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255,68,68,0.1);
+      border: 1px solid rgba(255,68,68,0.3);
+      border-radius: 6px;
+      padding: 4px 10px;
+      display: none;
+    }
+
+    .tab-warning.visible { display: block; }
+
+    .timer-not-started {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* answer grid */
+    .grid-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+
+    .grid-title {
+      padding: 16px 24px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .answered-count {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    .grid-header {
+      display: grid;
+      grid-template-columns: 52px repeat(4, 1fr);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,212,255,0.04);
+    }
+
+    .grid-header span {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .grid-header span:first-child { text-align: left; color: var(--muted); }
+
+    .question-row {
+      display: grid;
+      grid-template-columns: 52px repeat(4, 1fr);
+      padding: 6px 16px;
+      border-bottom: 1px solid rgba(30,45,69,0.5);
+      align-items: center;
+      transition: background 0.15s;
+    }
+
+    .question-row:last-child { border-bottom: none; }
+    .question-row:hover { background: rgba(0,212,255,0.03); }
+    .question-row.answered { background: rgba(0,214,118,0.04); }
+
+    .q-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .option-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* custom radio */
+    .option-cell input[type="radio"] { display: none; }
+
+    .option-cell label {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .option-cell label:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0,212,255,0.08);
+    }
+
+    .option-cell input[type="radio"]:checked + label {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 2px 12px rgba(0,212,255,0.35);
+    }
+
+    /* submit */
+    .submit-area {
+      max-width: 900px;
+      margin: 24px auto 0;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .submit-note {
+      font-size: 12px;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .btn-submit {
+      padding: 14px 40px;
+      background: linear-gradient(135deg, #00e676, #00b050);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #000;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(0,230,118,0.3);
+    }
+
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,230,118,0.4); }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* ── THANK YOU PAGE ── */
+    #thanks-page {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .thanks-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .check-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(0,230,118,0.12);
+      border: 2px solid rgba(0,230,118,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+
+    .thanks-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .thanks-sub { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 600px) {
+      .reg-card { padding: 32px 24px; }
+      .grid-header, .question-row { grid-template-columns: 40px repeat(4, 1fr); padding: 6px 10px; }
+      .option-cell label { width: 38px; height: 38px; font-size: 13px; }
+      #timer-display { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ REGISTRATION ══════════ -->
+<div id="reg-page" class="page">
+  <div class="reg-card">
+    <div class="reg-header">
+      <div class="reg-badge">METE 451</div>
+      <div class="reg-title">Answer <span>Sheet</span></div>
+      <div class="reg-sub">Hydrocyclone, Classification &amp; Process Control</div>
+    </div>
+
+    <div class="info-box">
+      <strong>⚠ Instructions</strong>
+      20 questions · Timer starts on your first answer · 6 min total · Tab switch = −1.5 pts penalty
+    </div>
+
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="reg-name" placeholder="Enter your full name" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label>Index Number</label>
+      <input type="text" id="reg-index" placeholder="e.g. 20234567" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label>Group Number</label>
+      <select id="reg-group">
+        <option value="">— Select your group —</option>
+        <option>Group 1</option><option>Group 2</option><option>Group 3</option>
+        <option>Group 4</option><option>Group 5</option><option>Group 6</option>
+        <option>Group 7</option><option>Group 8</option><option>Group 9</option>
+        <option>Group 10</option><option>Group 11</option><option>Group 12</option>
+        <option>Group 13</option><option>Group 14</option><option>Group 15</option>
+        <option>Group 16</option><option>Group 17</option>
+      </select>
+    </div>
+
+    <button class="btn-start" id="btn-begin" onclick="beginQuiz()">Open Answer Sheet →</button>
+  </div>
+  <div class="footer">©Team Benny</div>
+</div>
+
+<!-- ══════════ ANSWER SHEET ══════════ -->
+<div id="sheet-page" class="page">
+  <div class="sheet-header">
+    <div class="student-info">
+      <div class="student-name" id="disp-name">—</div>
+      <div class="student-meta" id="disp-meta">—</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+      <div class="timer-block">
+        <div class="timer-label">Time Remaining</div>
+        <div id="timer-display">6:00</div>
+      </div>
+      <div class="timer-not-started" id="timer-hint">Starts on first answer</div>
+      <div class="tab-warning" id="tab-warn">⚠ Tab switch detected</div>
+    </div>
+  </div>
+
+  <div class="grid-container">
+    <div class="grid-title">
+      <span>Answer Grid — 20 Questions</span>
+      <span class="answered-count"><span id="ans-count">0</span> / 20 answered</span>
+    </div>
+    <div class="grid-header">
+      <span>Q#</span>
+      <span>A</span>
+      <span>B</span>
+      <span>C</span>
+      <span>D</span>
+    </div>
+    <div id="answer-grid">
+      <!-- rows injected by JS -->
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <div class="submit-note">Review all answers before submitting. You cannot change answers after submission.</div>
+    <button class="btn-submit" id="btn-submit" onclick="submitQuiz()">Submit Answers</button>
+  </div>
+
+  <div class="footer" style="margin-top:32px;">©Team Benny</div>
+</div>
+
+<!-- ══════════ THANK YOU ══════════ -->
+<div id="thanks-page" class="page" style="display:flex;">
+  <div style="display:none;" id="thanks-inner">
+    <div class="thanks-card">
+      <div class="check-icon">✓</div>
+      <div class="thanks-title">Submitted!</div>
+      <p class="thanks-sub">Your answers have been recorded, <strong id="thanks-name">—</strong>.<br/>Results will be shared by your instructor.</p>
+    </div>
+    <div class="footer">©Team Benny</div>
+  </div>
+</div>
+
+<script>
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQ49ebOvpIuttMBXh7gkCRU857mK6T0Hr3v4yiEisPzHjwHdaPFyD744kWGVu81KymqA/exec";
+  const TOTAL_TIME = 6 * 60; // 6 minutes in seconds
+  const TAB_PENALTY = 1.5;
+  const TOTAL_Q = 20;
+
+  let studentName = '', indexNumber = '', groupNumber = '';
+  let answers = {};
+  let timerInterval = null;
+  let timeLeft = TOTAL_TIME;
+  let timerStarted = false;
+  let tabSwitches = 0;
+  let submitted = false;
+
+  // ── Build answer grid ──
+  function buildGrid() {
+    const container = document.getElementById('answer-grid');
+    container.innerHTML = '';
+    for (let q = 1; q <= TOTAL_Q; q++) {
+      const row = document.createElement('div');
+      row.className = 'question-row';
+      row.id = `row-${q}`;
+      row.innerHTML = `<div class="q-num">${String(q).padStart(2,'0')}</div>` +
+        ['A','B','C','D'].map(opt => `
+          <div class="option-cell">
+            <input type="radio" name="q${q}" id="q${q}${opt}" value="${opt}" onchange="selectAnswer(${q},'${opt}')">
+            <label for="q${q}${opt}">${opt}</label>
+          </div>`).join('');
+      container.appendChild(row);
+    }
+  }
+
+  function selectAnswer(qNum, opt) {
+    answers[qNum] = opt;
+    document.getElementById(`row-${qNum}`).classList.add('answered');
+    document.getElementById('ans-count').textContent = Object.keys(answers).length;
+    if (!timerStarted) {
+      timerStarted = true;
+      document.getElementById('timer-hint').style.display = 'none';
+      startTimer();
+    }
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        submitQuiz();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const el = document.getElementById('timer-display');
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    el.textContent = `${mins}:${String(secs).padStart(2,'0')}`;
+    el.classList.remove('warning','danger');
+    if (timeLeft <= 30) el.classList.add('danger');
+    else if (timeLeft <= 60) el.classList.add('warning');
+  }
+
+  // ── Tab switch detection ──
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !submitted) {
+      tabSwitches++;
+      const warn = document.getElementById('tab-warn');
+      warn.textContent = `⚠ Tab switches: ${tabSwitches} (−${(tabSwitches * TAB_PENALTY).toFixed(1)} pts)`;
+      warn.classList.add('visible');
+      setTimeout(() => warn.classList.remove('visible'), 3000);
+    }
+  });
+
+  // ── Registration ──
+  async function beginQuiz() {
+    const nameEl = document.getElementById('reg-name');
+    const idxEl  = document.getElementById('reg-index');
+    const grpEl  = document.getElementById('reg-group');
+    const btn    = document.getElementById('btn-begin');
+
+    if (!nameEl.value.trim() || !idxEl.value.trim() || !grpEl.value) {
+      alert('Please fill in all fields before continuing.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Checking…';
+
+    try {
+      const resp = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=Sheet1`);
+      const data = await resp.json();
+      const alreadyTaken = data.some(r => String(r.indexNumber).trim() === idxEl.value.trim());
+      if (alreadyTaken) {
+        alert('This index number has already submitted answers. You cannot submit again.');
+        btn.disabled = false;
+        btn.textContent = 'Open Answer Sheet →';
+        return;
+      }
+    } catch(e) {
+      console.warn('Could not verify index — proceeding anyway.', e);
+    }
+
+    studentName = nameEl.value.trim();
+    indexNumber = idxEl.value.trim();
+    groupNumber = grpEl.value;
+
+    document.getElementById('disp-name').textContent = studentName;
+    document.getElementById('disp-meta').textContent = `${indexNumber} · ${groupNumber}`;
+    document.getElementById('thanks-name').textContent = studentName;
+
+    buildGrid();
+
+    document.getElementById('reg-page').style.display  = 'none';
+    document.getElementById('sheet-page').style.display = 'block';
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy',  e => e.preventDefault());
+    document.addEventListener('cut',   e => e.preventDefault());
+  }
+
+  // ── Submit ──
+  async function submitQuiz() {
+    if (submitted) return;
+    submitted = true;
+    clearInterval(timerInterval);
+
+    document.getElementById('btn-submit').disabled = true;
+    document.getElementById('btn-submit').textContent = 'Submitting…';
+
+    const timeUsed = TOTAL_TIME - timeLeft;
+    const tabDeduction = tabSwitches * TAB_PENALTY;
+    const totalAnswered = Object.keys(answers).length;
+
+    const answerStr = Array.from({length: TOTAL_Q}, (_, i) => `Q${i+1}=${answers[i+1] || '-'}`).join(',');
+
+    const payload = {
+      sheet: 'Sheet1',
+      studentName,
+      indexNumber,
+      groupNumber,
+      department: 'metallurgical',
+      answers: answerStr,
+      totalAnswered,
+      tabSwitches,
+      tabDeduction: tabDeduction.toFixed(1),
+      timeUsedSeconds: timeUsed,
+      timestamp: new Date().toLocaleString(),
+      rawScore: 0,
+      tabPenalty: tabDeduction.toFixed(1),
+      finalScore: 0,
+      totalQuestions: TOTAL_Q,
+      percentage: '0.0',
+    };
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch(e) { console.error('Submit error:', e); }
+
+    document.getElementById('sheet-page').style.display = 'none';
+    const tp = document.getElementById('thanks-page');
+    tp.style.display = 'flex';
+    tp.style.alignItems = 'center';
+    tp.style.justifyContent = 'center';
+    document.getElementById('thanks-inner').style.display = 'block';
+  }
+
+  document.getElementById('reg-index').addEventListener('paste', e => e.preventDefault());
+</script>
+</body>
 </html>
